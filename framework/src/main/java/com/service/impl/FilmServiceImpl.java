@@ -1,10 +1,21 @@
 package com.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.entity.Film;
+import com.domain.vo.ActorVo;
+import com.domain.vo.FilmVo;
+import com.domain.vo.PageVo;
+import com.entity.*;
 import com.mapper.FilmMapper;
-import com.service.FilmService;
+import com.service.*;
+import com.utils.BeanCopyUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * (Film)表服务实现类
@@ -14,6 +25,69 @@ import org.springframework.stereotype.Service;
  */
 @Service("filmService")
 public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film> implements FilmService {
+    @Resource
+    private FilmActorService filmActorService;
+    @Resource
+    private FilmTypeService filmTypeService;
+    @Resource
+    private ActorService actorService;
+    @Resource
+    private TypeService typeService;
+    @Override
+    public PageVo filmList(String filmName, String year, Integer pageNum, Integer pageSize, String isShow) {
+        LambdaQueryWrapper<Film> queryWrapper =
+                new LambdaQueryWrapper<>();
+        //filmName year 若有数值则进行模糊查询，空则进行分页查询，pageNum、pageSize 分页查询（不能为空）
+        //isShow true 正在上映，false 即将上映 若值为NULL则不进行次条件查询
+        //根据电影id 倒序
+        queryWrapper.like(StringUtils.hasText(filmName),Film::getFilmName,filmName)
+                .like(StringUtils.hasText(year),Film::getYear,year)
+                .eq(!isShow.equals("NULL"),Film::getIsShow,isShow)
+                .orderByDesc(Film::getId);
+        Page<Film> page = new Page<>(pageNum,pageSize);
+        page(page,queryWrapper);
+        //存放 电影演员List、电影类型List
+        List<FilmVo> filmVos = BeanCopyUtils.copyBeanList(page.getRecords(), FilmVo.class);
+        List<FilmVo> collect = filmVos.stream()
+                .map(filmVo -> filmVo.setActors(getActors(filmVo.getId())))
+                .map(filmVo -> filmVo.setTypes(getTypes(filmVo.getId())))
+                .collect(Collectors.toList());
+        return new PageVo(page.getTotal(),collect);
+    }
 
+
+    public FilmVo getFilmById(Long id) {
+        Film film = getById(id);
+        FilmVo filmVo = BeanCopyUtils.copyBean(film, FilmVo.class);
+        filmVo.setTypes(getTypes(id));
+        filmVo.setActors(getActors(id));
+        return filmVo;
+    }
+
+
+    private List<ActorVo> getActors(Long id) {
+        //通过film_id 获取演员表
+        LambdaQueryWrapper<FilmActor> queryWrapper =
+                new LambdaQueryWrapper<>();
+        queryWrapper.eq(FilmActor::getFilmId,id);
+        List<FilmActor> filmActors = filmActorService.list(queryWrapper);
+        List<Actor> actors = filmActors.stream()
+                .map(f -> actorService.getById(f.getActorId()))
+                .collect(Collectors.toList());
+        List<ActorVo> actorVos = BeanCopyUtils.copyBeanList(actors, ActorVo.class);
+        return actorVos;
+    }
+    private List<String> getTypes(Long id) {
+        //通过film_id 获取类型表
+        LambdaQueryWrapper<FilmType> queryWrapper =
+                new LambdaQueryWrapper<>();
+        queryWrapper.eq(FilmType::getFilmId,id);
+        List<FilmType> filmTypes = filmTypeService.list(queryWrapper);
+        List<String> typesVo = filmTypes.stream()
+                .map(f -> typeService.getById(f.getTypeId()))
+                .map(type -> type.getName())
+                .collect(Collectors.toList());
+        return typesVo;
+    }
 }
 

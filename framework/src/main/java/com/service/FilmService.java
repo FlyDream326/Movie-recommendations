@@ -1,6 +1,8 @@
 package com.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.domain.vo.FilmVo;
+import com.domain.vo.PageVo;
 import com.entity.Film;
 
 
@@ -12,5 +14,8 @@ import com.entity.Film;
  */
 public interface FilmService extends IService<Film> {
 
+    PageVo filmList(String filmName, String year, Integer pageNum, Integer pageSize, String isShow);
+
+    FilmVo getFilmById(Long id);
 }
 

@@ -22,7 +22,7 @@ public class FilmActor  {
     @TableId
     private Long filmId;
     //演员id
-    private Long actor;
+    private Long actorId;
 
 
 

@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>framework</module>
-        <module>admin</module>
+        <module>front-web</module>
     </modules>
 
     <properties>

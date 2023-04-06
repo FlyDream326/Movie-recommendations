@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>admin</artifactId>
+    <artifactId>front-web</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

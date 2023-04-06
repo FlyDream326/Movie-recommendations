@@ -6,9 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan("com.mapper")
-public class AdminApplication {
+public class FrontWebApplication {
     public static void main(String[] args) {
-        SpringApplication.run(AdminApplication.class,args);
-        System.out.println("Hello World!");
+        SpringApplication.run(FrontWebApplication.class,args);
+        System.out.println("http://localhost:6666");
+
     }
 }

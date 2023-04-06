@@ -1,23 +1,18 @@
-package com.entity;
+package com.domain.vo;
 
-
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-/**
- * (Film)表实体类
- *
- * @author makejava
- * @since 2023-04-05 15:27:13
- */
-@SuppressWarnings("serial")
+import lombok.experimental.Accessors;
+
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("film")
-public class Film  {
+@Accessors(chain = true)
+public class FilmVo {
     //电影id
     @TableId
     private Long id;
@@ -42,12 +37,10 @@ public class Film  {
     private String runtime;
     //评分
     private String grades;
-    //是否上映(true真,false假)
+    //是否上映(0真,1假)
     private String isShow;
-    //删除标志（0代表未删除，1代表已删除）
-    private Integer delFlag;
 
-
+    private List<ActorVo> actors;
+    private List<String> types;
 
 }
-
