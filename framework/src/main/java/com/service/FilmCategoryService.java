@@ -1,16 +1,16 @@
 package com.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.entity.FilmType;
+import com.entity.FilmCategory;
 
 
 /**
- * (FilmType)表服务接口
+ * (FilmCategory)表服务接口
  *
  * @author makejava
  * @since 2023-04-05 15:31:55
  */
-public interface FilmTypeService extends IService<FilmType> {
+public interface FilmCategoryService extends IService<FilmCategory> {
 
 }
 

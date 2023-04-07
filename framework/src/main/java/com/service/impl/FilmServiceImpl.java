@@ -28,11 +28,11 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film> implements Fi
     @Resource
     private FilmActorService filmActorService;
     @Resource
-    private FilmTypeService filmTypeService;
+    private FilmCategoryService filmCategoryService;
     @Resource
     private ActorService actorService;
     @Resource
-    private TypeService typeService;
+    private CategoryService typeService;
     @Override
     public PageVo filmList(String filmName, String year, Integer pageNum, Integer pageSize, String isShow) {
         LambdaQueryWrapper<Film> queryWrapper =
@@ -79,12 +79,12 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film> implements Fi
     }
     private List<String> getTypes(Long id) {
         //通过film_id 获取类型表
-        LambdaQueryWrapper<FilmType> queryWrapper =
+        LambdaQueryWrapper<FilmCategory> queryWrapper =
                 new LambdaQueryWrapper<>();
-        queryWrapper.eq(FilmType::getFilmId,id);
-        List<FilmType> filmTypes = filmTypeService.list(queryWrapper);
-        List<String> typesVo = filmTypes.stream()
-                .map(f -> typeService.getById(f.getTypeId()))
+        queryWrapper.eq(FilmCategory::getFilmId,id);
+        List<FilmCategory> filmCategories = filmCategoryService.list(queryWrapper);
+        List<String> typesVo = filmCategories.stream()
+                .map(f -> typeService.getById(f.getCategoryId()))
                 .map(type -> type.getName())
                 .collect(Collectors.toList());
         return typesVo;

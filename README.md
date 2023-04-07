@@ -7,3 +7,4 @@
 - **MySQL 8.0.29**
 
 [**接口信息见热映电影推荐文档**](热映电影推荐.md)
+![电影数据text->Object](img\电影数据text-Object.png)

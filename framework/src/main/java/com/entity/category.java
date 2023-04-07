@@ -7,23 +7,23 @@ import lombok.NoArgsConstructor;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 /**
- * (FilmType)表实体类
+ * (category)表实体类
  *
  * @author makejava
- * @since 2023-04-05 15:31:55
+ * @since 2023-04-05 15:32:07
  */
 @SuppressWarnings("serial")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("film_type")
-public class FilmType  {
-    //电影id    
+@TableName("category")
+public class category {
+    //类型id    
     @TableId
-    private Long filmId;
-    //类型id
-    private Long typeId;
+    private Long id;
 
+    //类型name
+    private String name;
 
 
 

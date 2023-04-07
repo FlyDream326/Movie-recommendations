@@ -56,6 +56,8 @@ public class FilmController {
         PageVo pageVo = filmService.filmList(filmName,year,pageNum,pageSize, "true");
         return ResponseResult.okResult(pageVo);
     }
+    //TODO 根据category 进行分类查询
+
 
 }
 
