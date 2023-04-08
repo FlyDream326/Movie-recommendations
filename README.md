@@ -10,4 +10,4 @@
 ---
 ### **电影数据转化**
 **text->Film(Object)**
-![电影数据text->Film(Object)](img/text-Object.png)
+![电影数据text->Film(Object)]<img src="img/text-Object.png" alt="电影数据text->Film(Object)" style ="zoom:75%;">
