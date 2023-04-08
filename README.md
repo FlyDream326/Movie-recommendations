@@ -9,4 +9,4 @@
 [**接口信息见热映电影推荐文档**](热映电影推荐.md)
 ---
 ### **电影数据转化**
-<img src="img\text-Object.png" />
+![](img/text-Object.png)
