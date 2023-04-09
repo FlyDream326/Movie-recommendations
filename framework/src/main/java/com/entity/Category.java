@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 /**
- * (category)表实体类
+ * (Category)表实体类
  *
  * @author makejava
  * @since 2023-04-05 15:32:07
@@ -16,8 +16,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("category")
-public class category {
+@TableName("Category")
+public class Category {
     //类型id    
     @TableId
     private Long id;

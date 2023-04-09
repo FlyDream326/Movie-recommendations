@@ -56,7 +56,17 @@ public class FilmController {
         PageVo pageVo = filmService.filmList(filmName,year,pageNum,pageSize, "true");
         return ResponseResult.okResult(pageVo);
     }
-    //TODO 根据category 进行分类查询
+    @GetMapping("/cid")
+    public ResponseResult getFilmByCategoryId(@RequestParam("cid")Long cid,
+                                              @RequestParam("pageNum")Integer pageNum,
+                                              @RequestParam("pageSize")Integer pageSize) {
+        // 根据category 进行分类分页查询 返回电影id name 海报
+        PageVo pageVo = filmService.getFilmByCategoryId(cid, pageNum, pageSize);
+        return ResponseResult.okResult(pageVo);
+    }
+
+
+
 
 
 }

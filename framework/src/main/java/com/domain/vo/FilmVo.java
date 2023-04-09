@@ -1,6 +1,5 @@
 package com.domain.vo;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,6 @@ import java.util.List;
 @Accessors(chain = true)
 public class FilmVo {
     //电影id
-    @TableId
     private Long id;
 
     //开拍年份
@@ -41,6 +39,6 @@ public class FilmVo {
     private String isShow;
 
     private List<ActorVo> actors;
-    private List<String> types;
+    private List<String> categories;
 
 }

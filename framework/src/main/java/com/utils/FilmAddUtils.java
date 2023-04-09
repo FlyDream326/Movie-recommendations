@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Films{
+public class FilmAddUtils {
         private String userName;
         private String  year;
         private String grade;
@@ -25,7 +25,7 @@ public class Films{
         private String director;
         private String synopsis;
         private List<String> actorList;
-        public Films strToFilms(String str){
+        public FilmAddUtils strToFilms(String str){
            return start(testToFilmObject(str));
         }
         public List<String> testToFilmObject(String str) {
@@ -39,7 +39,7 @@ public class Films{
             return collect;
         }
 
-        public Films start(List<String> list) {
+        public FilmAddUtils start(List<String> list) {
 
             Map<String,String> map = nameYearGrade(list.get(0));
             String name = map.get("name");
@@ -54,7 +54,7 @@ public class Films{
             String director = splitLast(list.get(7));//去除最后一个空格
             List<String> actorList = stringToList(list.get(8));
             String synopsis = list.get(9);
-            return new Films(name,year,grade,showTime,runTime,categoryList,notion,language,director,synopsis,actorList);
+            return new FilmAddUtils(name,year,grade,showTime,runTime,categoryList,notion,language,director,synopsis,actorList);
 
         }
         public Map<String,String> nameYearGrade(String str){

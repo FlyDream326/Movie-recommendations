@@ -4,12 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.domain.vo.ActorVo;
+import com.domain.vo.FilmSimpleVo;
 import com.domain.vo.FilmVo;
 import com.domain.vo.PageVo;
-import com.entity.*;
+import com.entity.Actor;
+import com.entity.Film;
+import com.entity.FilmActor;
+import com.entity.FilmCategory;
 import com.mapper.FilmMapper;
 import com.service.*;
 import com.utils.BeanCopyUtils;
+import com.utils.MybatisUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -50,7 +55,7 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film> implements Fi
         List<FilmVo> filmVos = BeanCopyUtils.copyBeanList(page.getRecords(), FilmVo.class);
         List<FilmVo> collect = filmVos.stream()
                 .map(filmVo -> filmVo.setActors(getActors(filmVo.getId())))
-                .map(filmVo -> filmVo.setTypes(getTypes(filmVo.getId())))
+                .map(filmVo -> filmVo.setCategories(getCategory(filmVo.getId())))
                 .collect(Collectors.toList());
         return new PageVo(page.getTotal(),collect);
     }
@@ -59,10 +64,31 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film> implements Fi
     public FilmVo getFilmById(Long id) {
         Film film = getById(id);
         FilmVo filmVo = BeanCopyUtils.copyBean(film, FilmVo.class);
-        filmVo.setTypes(getTypes(id));
+        filmVo.setCategories(getCategory(id));
         filmVo.setActors(getActors(id));
         return filmVo;
     }
+
+    @Override
+    public PageVo getFilmByCategoryId(Long cid, Integer pageNum, Integer pageSize) {
+        LambdaQueryWrapper<FilmCategory> wrap = new LambdaQueryWrapper<>();
+        wrap.eq(FilmCategory::getCategoryId, cid);
+        List<FilmCategory> list = filmCategoryService.list(wrap);
+        List<Long> collect = list.stream()
+                .map(FilmCategory::getFilmId)
+                .collect(Collectors.toList());
+        List<Film> films = listByIds(collect);
+        //手动分页
+        List<Film> films1 = null;
+        try {
+            films1 = MybatisUtils.subList(films, pageNum, pageSize);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        List<FilmSimpleVo> vos = BeanCopyUtils.copyBeanList(films1, FilmSimpleVo.class);
+        return new PageVo(new Long(vos.size()),vos);
+    }
+
 
 
     private List<ActorVo> getActors(Long id) {
@@ -77,7 +103,7 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film> implements Fi
         List<ActorVo> actorVos = BeanCopyUtils.copyBeanList(actors, ActorVo.class);
         return actorVos;
     }
-    private List<String> getTypes(Long id) {
+    private List<String> getCategory(Long id) {
         //通过film_id 获取类型表
         LambdaQueryWrapper<FilmCategory> queryWrapper =
                 new LambdaQueryWrapper<>();

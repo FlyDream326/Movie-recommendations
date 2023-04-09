@@ -15,8 +15,8 @@ public class FilmDetailsUtils {
                 "演员：杨皓宇 艾丽娅 王一通 蒋奇明 盛晨晨 郭帆 龚格尔 洛翼云 \n" +
                 "简介：脑洞大开高分奇片，地球人外星人千里奔现！\n" +
                 "唐志军（杨皓宇 饰）是一家诞生于上世纪八十年代的科幻杂志——《宇宙探索》编辑部的主编。现如今的杂志社日渐式微，唐志军也终成落魄潦倒，鳏寡孤独之人。但他却依然几十年如一日的痴迷于寻找地外文明。终于有一天，他接收到了一个疑似来自宇宙深处的异常信号，于是他召集同是天涯沦落人的伙伴们，带着那一个困惑他终生的问题，再一次踏上寻找外星人的旅途。");
-        Films films = new Films().strToFilms(str);
-        System.out.println(JSON.toJSON(films));
+        FilmAddUtils filmAddUtils = new FilmAddUtils().strToFilms(str);
+        System.out.println(JSON.toJSON(filmAddUtils));
 
 
     }
