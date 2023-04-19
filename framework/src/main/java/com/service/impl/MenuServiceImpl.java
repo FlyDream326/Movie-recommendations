@@ -131,7 +131,14 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
      */
     @Override
     public ResponseResult menuRoleTreeSelect(Long id) {
-        List<MenuDto> menuDtos= this.getBaseMapper().menuRoleTreeSelect(id);
+        List<MenuDto> menuDtos = null;
+        if(SystemConstants.ADMIN.equals(id.toString())){
+            //如果id =1 返回所有权限
+            menuDtos = this.getBaseMapper().allMenuRoleTreeSelect();
+        }else {
+            menuDtos= this.getBaseMapper().menuRoleTreeSelect(id);
+        }
+
         // 获取权限id集合
         List<Long> collect = menuDtos.stream().
                 map(MenuDto::getId).

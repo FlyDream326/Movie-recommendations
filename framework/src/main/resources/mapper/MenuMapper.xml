@@ -63,6 +63,16 @@
         FROM `sys_role_menu` rm
                  LEFT JOIN sys_menu sm ON rm.menu_id = sm.id
         WHERE rm.role_id = #{id}
+        AND sm.`status` = 0
+        AND sm.del_flag = 0
+        ORDER BY sm.id;
+    </select>
+    <select id="allMenuRoleTreeSelect" resultType="com.domain.dto.MenuDto">
+        SELECT
+            sm.id,sm.menu_name,sm.parent_id
+        FROM sys_menu sm
+        WHERE sm.`status` = 0
+        AND sm.del_flag = 0
         ORDER BY sm.id;
     </select>
 </mapper>
