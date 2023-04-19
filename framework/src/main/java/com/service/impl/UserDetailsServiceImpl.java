@@ -1,24 +1,29 @@
 package com.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.constants.SystemConstants;
 import com.entity.LoginUser;
 import com.entity.User;
+import com.mapper.MenuMapper;
 import com.mapper.UserMapper;
+import com.service.MenuService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Objects;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-//    @Autowired
-//    private MenuService menuService;
-//    @Resource
-//    private  MenuMapper menuMapper;
+    @Autowired
+    private MenuService menuService;
+    @Resource
+    private MenuMapper menuMapper;
     @Resource
     private UserMapper userMapper;
     @Override
@@ -34,10 +39,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
        }
 
        //返回用户信息
-//        if(user.getType().equals(SystemConstants.ADMIN)){
-//            List<String> perms = menuService.selectPermsByUserKey(user.getId());
-//            return new LoginUser(user,perms);
-//        }
+        if(user.getType().equals(SystemConstants.ADMIN)){
+            List<String> perms = menuService.selectPermsByUserKey(user.getId());
+            return new LoginUser(user,perms);
+        }
         return new LoginUser(user,null);
 
     }

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActorVo {
+    //演员id
+    private Long id;
     //演员名字
     private String name;
     //扮演的角色

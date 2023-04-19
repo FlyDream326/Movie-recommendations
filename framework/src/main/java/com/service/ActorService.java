@@ -1,7 +1,9 @@
 package com.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.domain.dto.AddActorDto;
 import com.entity.Actor;
+import com.utils.ResponseResult;
 
 
 /**
@@ -12,5 +14,6 @@ import com.entity.Actor;
  */
 public interface ActorService extends IService<Actor> {
 
+    ResponseResult addActor(AddActorDto dto);
 }
 

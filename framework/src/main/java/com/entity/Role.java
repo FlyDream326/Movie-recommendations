@@ -43,7 +43,10 @@ public class Role  {
     private Date updateTime;
     //备注
     private String remark;
-
+    public Role(Long roleId, String status) {
+        this.id = roleId;
+        this.status = status;
+    }
 
 
 }

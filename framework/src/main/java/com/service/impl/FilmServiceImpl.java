@@ -3,6 +3,7 @@ package com.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.constants.SystemConstants;
 import com.domain.vo.ActorVo;
 import com.domain.vo.FilmSimpleVo;
 import com.domain.vo.FilmVo;
@@ -11,10 +12,12 @@ import com.entity.Actor;
 import com.entity.Film;
 import com.entity.FilmActor;
 import com.entity.FilmCategory;
+import com.enums.AppHttpCodeEnum;
 import com.mapper.FilmMapper;
 import com.service.*;
 import com.utils.BeanCopyUtils;
 import com.utils.MybatisUtils;
+import com.utils.ResponseResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -37,7 +40,8 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film> implements Fi
     @Resource
     private ActorService actorService;
     @Resource
-    private CategoryService typeService;
+    private CategoryService categoryService;
+
     @Override
     public PageVo filmList(String filmName, String year, Integer pageNum, Integer pageSize, String isShow) {
         LambdaQueryWrapper<Film> queryWrapper =
@@ -57,7 +61,7 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film> implements Fi
                 .map(filmVo -> filmVo.setActors(getActors(filmVo.getId())))
                 .map(filmVo -> filmVo.setCategories(getCategory(filmVo.getId())))
                 .collect(Collectors.toList());
-        return new PageVo(page.getTotal(),collect);
+        return new PageVo(collect,page.getTotal());
     }
 
 
@@ -86,9 +90,92 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film> implements Fi
             throw new RuntimeException(e);
         }
         List<FilmSimpleVo> vos = BeanCopyUtils.copyBeanList(films1, FilmSimpleVo.class);
-        return new PageVo(new Long(vos.size()),vos);
+        return new PageVo(vos,new Long(vos.size()));
     }
 
+    /**
+     * 暂时未被使用
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public PageVo sysFilmList(Integer pageNum, Integer pageSize) {
+        //查询所有未被删除的电影信息
+        LambdaQueryWrapper<Film> queryWrapper =
+                new LambdaQueryWrapper<>();
+        queryWrapper.eq(Film::getDelFlag, SystemConstants.STATUS_NORMAL);
+        Page<Film> filmPage = new Page<>(pageNum,pageSize);
+        page(filmPage,queryWrapper);
+        // 增添演员表和标签 返回FilmVo
+        List<FilmVo> filmVos = BeanCopyUtils.copyBeanList(filmPage.getRecords(), FilmVo.class);
+        List<FilmVo> vos = filmVos.stream()
+                .map(filmVo -> filmVo.setCategories(getCategory(filmVo.getId())))
+                .map(filmVo -> filmVo.setActors(getActors(filmVo.getId())))
+                .collect(Collectors.toList());
+        return new PageVo(vos,filmPage.getTotal());
+    }
+
+    /**
+     * 根据id 逻辑删除电影信息
+     * @param id
+     */
+    @Override
+    public void deleteFilmById(Long id) {
+        this.getBaseMapper().deleteById(id);
+    }
+
+    /**
+     * 更新电影信息
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public ResponseResult upDataInfo(FilmVo dto) {
+        Film film = BeanCopyUtils.copyBean(dto, Film.class);
+        if(StringUtils.hasText(film.getId().toString())){
+            LambdaQueryWrapper<Film> queryWrapper =
+                    new LambdaQueryWrapper<>();
+            queryWrapper.eq(Film::getId,film.getId());
+            //更新 演员&电影表,分类&电影表
+            update(film,queryWrapper);
+            upDataActorCategory(dto.getId(),
+                    dto.getActors(),
+                    dto.getCategories());
+            return ResponseResult.okResult();
+        }else {
+            return ResponseResult.errorResult(AppHttpCodeEnum.ID_NOT_NULL);
+        }
+
+    }
+    /**
+     * 添加电影信息
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public ResponseResult addFilmInfo(FilmVo dto) {
+        Film film = BeanCopyUtils.copyBean(dto, Film.class);
+        LambdaQueryWrapper<Film> queryWrapper =
+                new LambdaQueryWrapper<>();
+        queryWrapper.eq(Film::getFilmName,film.getFilmName());
+        // 电影信息已存在,返回 (514,"电影信息已存在")
+        // 否则 保存电影信息
+        if(count(queryWrapper)>0){
+            return ResponseResult.errorResult(AppHttpCodeEnum.FILM_INFO_EXIST);
+        }else {
+            save(film);
+            //更新 演员&电影表,分类&电影表
+            upDataActorCategory(film.getId(),
+                    dto.getActors(),
+                    dto.getCategories());
+            return ResponseResult.okResult();
+        }
+
+
+    }
 
 
     private List<ActorVo> getActors(Long id) {
@@ -110,10 +197,36 @@ public class FilmServiceImpl extends ServiceImpl<FilmMapper, Film> implements Fi
         queryWrapper.eq(FilmCategory::getFilmId,id);
         List<FilmCategory> filmCategories = filmCategoryService.list(queryWrapper);
         List<String> typesVo = filmCategories.stream()
-                .map(f -> typeService.getById(f.getCategoryId()))
+                .map(f -> categoryService.getById(f.getCategoryId()))
                 .map(type -> type.getName())
                 .collect(Collectors.toList());
         return typesVo;
+    }
+
+    /**
+     * 更新 电影&演员表,电影&分类表 方法
+     * @param id
+     * @param actors
+     * @param categories
+     */
+    private void upDataActorCategory(Long id, List<ActorVo> actors, List<String> categories) {
+       // 根据电影id,演员id 生成 FilmActor 列表
+        List<FilmActor> filmActors = actors.stream()
+                .map(fa -> new FilmActor(id, fa.getId()))
+                .collect(Collectors.toList());
+        filmActorService.saveOrUpdateBatch(filmActors,filmActors.size());
+        // 跟分类名称查询id 列表
+        List<Long> idCollect = categories.stream()
+                .map(name -> categoryService.selectCategoryIdByName(name))
+                .collect(Collectors.toList());
+        // 根据电影id,分类id 生成 FilmCategory 列表
+        List<FilmCategory> filmCategories = idCollect.stream()
+                .map(cid -> new FilmCategory(id, cid))
+                .collect(Collectors.toList());
+        // 更新或新增 filmActors,filmCategories
+            filmActorService.saveOrUpdateBatch(filmActors,filmActors.size());
+            filmCategoryService.saveOrUpdateBatch(filmCategories,filmCategories.size());
+
     }
 }
 

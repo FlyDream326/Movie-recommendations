@@ -1,7 +1,10 @@
 package com.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.domain.dto.MenuDto;
 import com.entity.Menu;
+
+import java.util.List;
 
 
 /**
@@ -12,5 +15,14 @@ import com.entity.Menu;
  */
 public interface MenuMapper extends BaseMapper<Menu> {
 
+    List<String> selectPermsByUserId(Long id);
+
+    List<Menu> selectAllRouterMenu();
+
+    List<Menu> selectRouterMenuByUserId(Long userId);
+
+    List<String> selectPermsByUserKey(Long userId);
+
+    List<MenuDto> menuRoleTreeSelect(Long id);
 }
 

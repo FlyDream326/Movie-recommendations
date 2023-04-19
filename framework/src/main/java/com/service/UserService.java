@@ -1,6 +1,10 @@
 package com.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.domain.dto.AddUserDetailsDto;
+import com.domain.dto.AddUserDto;
+import com.domain.vo.PageVo;
+import com.domain.vo.UserRoleDetailVo;
 import com.entity.User;
 import com.utils.ResponseResult;
 
@@ -18,13 +22,14 @@ public interface UserService extends IService<User> {
 
     ResponseResult register(User user);
 
-//    PageVo userList(Integer pageNum, Integer pageSize, String userName, String phonenumber, String status);
-//
-//    void addUser(AddUserDto dto);
-//
-//    UserRoleDetailVo getUserDetailsId(Long id);
-//
-//    void updateUserDetails(AddUserDetailsDto dto);
+
+    PageVo userList(Integer pageNum, Integer pageSize, String userName, String phonenumber, String status);
+
+    void addUser(AddUserDto dto);
+
+    UserRoleDetailVo getUserDetailsId(Long id);
+
+    void updateUserDetails(AddUserDetailsDto dto);
 
 }
 

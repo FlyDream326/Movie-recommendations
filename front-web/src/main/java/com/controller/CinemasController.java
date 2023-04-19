@@ -27,7 +27,7 @@ public class CinemasController {
         //获取所有影院信息
        //CinemasVo vo =  cinemasService.cinemaList();
         List<Cinemas> list =  cinemasService.list();
-       return ResponseResult.okResult(new PageVo(new Long(list.size()),list));
+       return ResponseResult.okResult(new PageVo(list,new Long(list.size())));
     }
 
 }

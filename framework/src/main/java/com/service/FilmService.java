@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.domain.vo.FilmVo;
 import com.domain.vo.PageVo;
 import com.entity.Film;
+import com.utils.ResponseResult;
 
 
 /**
@@ -19,5 +20,13 @@ public interface FilmService extends IService<Film> {
     FilmVo getFilmById(Long id);
 
     PageVo getFilmByCategoryId(Long cid, Integer pageNum, Integer pageSize);
+
+    PageVo sysFilmList(Integer pageNum, Integer pageSize);
+
+    void deleteFilmById(Long id);
+
+    ResponseResult upDataInfo(FilmVo dto);
+
+    ResponseResult addFilmInfo(FilmVo dto);
 }
 

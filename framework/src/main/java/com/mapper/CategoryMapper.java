@@ -12,5 +12,6 @@ import com.entity.Category;
  */
 public interface CategoryMapper extends BaseMapper<Category> {
 
+    Long selectCategoryIdByName(String name);
 }
 

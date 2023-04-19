@@ -19,6 +19,10 @@ public enum AppHttpCodeEnum {
     PASSWORD_NOT_NULL(511, "密码不能为空"),
     MENU_NAME_EXIST(511, "菜单名称已存在"),
     CATEGORY_EXIST(512,"分类名已存在"),
+    ID_NOT_NULL(513,"id不能为空"),
+    FILM_INFO_NOT_NULL(513,"新增电影信息不能为空"),
+    FILM_INFO_EXIST(514,"电影信息已存在"),
+    ACTOR_INFO_EXIST(515,"演员信息已存在"),
     ;
     int code;
     String msg;

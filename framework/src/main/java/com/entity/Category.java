@@ -1,11 +1,11 @@
 package com.entity;
 
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 /**
  * (Category)表实体类
  *
@@ -24,6 +24,11 @@ public class Category {
 
     //类型name
     private String name;
+
+    //状态0:正常,1禁用
+    private String status;
+    //删除标志（0代表未删除，1代表已删除）
+    private Integer delFlag;
 
 
 
